@@ -1,5 +1,11 @@
-﻿// this script is for debugging purposes only
+// this script is for debugging purposes only
 // it will be copied to build directory
+
+Select("Submodel", "First");
+Tool("importtable", "Format", "Excel", "Preset", "Import NAMUR SMTs", "File", "C:\HOMI\Develop\Aasx\namur\Namur_SMT_FloatTypeFlowMeters\import_round_01\Import_Properties_Schwebe_2_added_Li_v06_HOMI.xlsx");
+
+
+
 // Select("Submodel", "First");
 // Tool("ExportTable", "File", "C:\\HOMI\\Develop\\Aasx\\repo\\new.adoc", "Preset", "AsciiDoc");
 // Select("Submodel", "First");

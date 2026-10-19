@@ -6,6 +6,8 @@ This source code is licensed under the Apache License 2.0 (see LICENSE.txt).
 
 This source code may use other Open Source software components (see LICENSE.txt).
 */
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Extensions
@@ -32,8 +34,36 @@ namespace Extensions
             if (id == null)
                 return null;
 
+            // IRDIs(?) -> can an IRDI Path identified?
+            if (Regex.IsMatch(id, @"^((\d{4,4}).*/)"))
+            {
+                // assume separation char
+                var sepChar = '/';
+
+                // IRDI path
+                var path = id.Split(sepChar);
+                if (path != null && path.Length >= 0)
+                {
+                    // ok, promising
+                    var newPath = new List<string>();
+
+                    foreach (var pp in path)
+                    {
+                        var ppid = pp;
+                        var m2 = Regex.Match(ppid, @"((\d{4,4}).*)(#\d{2,4})");
+                        if (m2.Success && m2.Groups.Count >= 1)
+                            ppid = m2.Groups[1].ToString();
+                        newPath.Add(ppid);
+                    }
+
+                    // ok, return that!
+                    return string.Join(sepChar, newPath);
+                }
+            }
+
+            // No .. ordinary approach
             // if id starts with 4 digits, it is an IRDI
-            var m = Regex.Match(id, @"((\d{4,4}).*)(#\d{2,4})");
+            var m = Regex.Match(id, @"((\d{4,4}).*([A-Za-z0-9]{4,6}))(#\d{2,4})");
             if (m.Success && m.Groups.Count >= 1)
                 id = m.Groups[1].ToString();
 

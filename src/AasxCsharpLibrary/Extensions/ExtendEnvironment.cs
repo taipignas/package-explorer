@@ -754,7 +754,7 @@ namespace Extensions
             var cdIdRaw = MatchModeUtil.FilterId(cdId, matchMode);
 
             var conceptDescription = env.AllConceptDescriptions()
-                .Where(c => MatchModeUtil.FilterId(c.Id, matchMode).Equals(cdId)).FirstOrDefault();
+                .Where(c => MatchModeUtil.FilterId(c.Id, matchMode).Equals(cdIdRaw)).FirstOrDefault();
 
             return conceptDescription;
         }

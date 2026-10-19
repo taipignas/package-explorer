@@ -450,8 +450,9 @@ namespace AasxPluginTechnicalData
                 {
                     var smlPI = smcGeneral.Value.FindFirstSemanticIdAs<Aas.ISubmodelElementList>(
                         theDefs.CD_ProductImages?.GetSingleKey(), MatchMode.Relaxed);
-                    foreach (var smcPI in smlPI?.Value?.FindAllSemanticIdAs<Aas.ISubmodelElementCollection>(
-                        theDefs.CD_ProductImage?.GetSingleKey(), MatchMode.Relaxed))
+                    if (smlPI != null)
+                    foreach (var smcPI in (smlPI?.Value?.FindAllSemanticIdAs<Aas.ISubmodelElementCollection>(
+                        theDefs.CD_ProductImage?.GetSingleKey(), MatchMode.Relaxed)).ForEachSafe())
                     {
                         var fPI = smcPI?.Value?.FindFirstSemanticIdAs<Aas.IFile>(
                             theDefs.CD_ProductImageFile?.GetSingleKey(), MatchMode.Relaxed);

@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright (c) 2018-2023 Festo SE & Co. KG <https://www.festo.com/net/de_de/Forms/web/contact_international>
 Author: Michael Hoffmeister
 
@@ -47,6 +47,7 @@ namespace AasxPluginExportTable.Table
                 SME.value, Property.{value, valueType, valueId}, MultiLanguageProperty.{value, vlaueId}, Range.{valueType, min, max}, Blob.{mimeType, value}, File.{mimeType, value}, ReferenceElement.value, 
                 RelationshipElement.{first, second}, SubmodelElementCollection.{value = #elements, ordered, allowDuplicates}, Entity.{entityType, asset}
                 CD.{preferredName[@en..], shortName[@en..], unit, unitId, sourceOfDefinition, symbol, dataType, definition[@en..], valueFormat}
+                Combinations: %(Parent|SME).packSemIds[fmt=1..4]% for semanticIds, %SME.packDescription[fmt=1..4]% for definition/ descriptions, %SME.packValue[fmt=1..4]% for values
                 Special: %nl%, %br%, %tab%, %brpost% = line break in post-process, %trim=all%,      
                 Import: %*% = match any, %stop% = stop if non-empty, %seq={ascii}% = split sequence by char {ascii}, %opt% = optional match
                 Commands for header cells include: %{fg,bg,table-bg}={color}% with {color} = {#a030a0, Red, blue, ..}, %halign={left, center, right}%, %valign={top, center, bottom}%,

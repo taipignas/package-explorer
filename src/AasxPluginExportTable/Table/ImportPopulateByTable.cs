@@ -362,7 +362,7 @@ namespace AasxPluginExportTable.Table
                 prop.Value = context.SmeValue;
 
                 // demux
-                prop.ValueType = Aas.Stringification.DataTypeDefXsdFromString(fen.ValueType) ?? Aas.DataTypeDefXsd.String;
+                prop.ValueType = Aas.Stringification.DataTypeDefXsdFromString(context.SmeValueType) ?? Aas.DataTypeDefXsd.String;
             }
 
             if (sme is Aas.MultiLanguageProperty mlp)

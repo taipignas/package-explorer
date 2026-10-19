@@ -556,14 +556,16 @@ namespace AasxPluginExportTable.Table
                         if (supIds?.IsValid() == true)
                         {
                             if (value.HasContent())
-                                value += "\r\n%BRPOST%SSI: ";
+                                value += "\r\n%BRPOST%";
+                            value += "SSI: ";
                             value += supIds.ToStringExtended(2, "%BRPOST%SSI: ") + " ";
                         }
 
                         if (isCaseOf?.IsValid() == true)
                         {
                             if (value.HasContent())
-                                value += "\r\n%BRPOST%ICO: ";
+                                value += "\r\n%BRPOST%";
+                            value += "ICO: ";
                             value += isCaseOf.ToStringExtended(2, "%BRPOST%ICO: ") + " ";
                         }
                     }
@@ -576,14 +578,16 @@ namespace AasxPluginExportTable.Table
                         if (supIds?.IsValid() == true)
                         {
                             if (value.HasContent())
-                                value += "\r\n%BRPOST%supplementalSemanticId(s):\r\n";
+                                value += "\r\n%BRPOST%";
+                            value += "supplementalSemanticId(s):\r\n";
                             value += supIds.ToStringExtended(2, "%BRPOST% ") + " ";
                         }
 
                         if (isCaseOf?.IsValid() == true)
                         {
                             if (value.HasContent())
-                                value += "\r\n%BRPOST%isCaseOf:\r\n";
+                                value += "\r\n%BRPOST%";
+                            value += "isCaseOf:\r\n";
                             value += isCaseOf.ToStringExtended(2, "%BRPOST% ") + " ";
                         }
 
@@ -678,6 +682,87 @@ namespace AasxPluginExportTable.Table
                     if (fmt == 4)
                     {
                         cells = new[] { valueType, value, unit, valueId };
+                    }
+
+                    var cellStr = "";
+                    foreach (var c in cells)
+                        if (c?.HasContent() == true)
+                        {
+                            if (cellStr.HasContent())
+                                cellStr += "\r\n%BRPOST%";
+                            cellStr += c;
+                        }
+
+                    rep(
+                        head + refName + $"[fmt={fmt}]",
+                        cellStr);
+                }
+            }
+
+            /// <summary>
+            /// Adds different potential cell contents w.r.t to value, example value, valueType
+            /// with {refName}[fmt=1] just CD.definition and SME.description
+            /// with {refName}[fmt=2,3,4] CD.definition and SME.description PLUS value list items
+            //                2 = just number, 3 = value, 4 = value/valueId
+            /// </summary>
+            protected void repPackDescr(string head, string refName,
+                Aas.IReferable rf,
+                Aas.IConceptDescription cd)
+            {
+                if (refName == null || rf == null)
+                    return;
+
+                // CD.Definition
+                var cdDef = "";
+                var iec = cd?.GetIEC61360();
+                if (iec?.Definition?.IsValid() == true)
+                    cdDef = iec.Definition.GetDefaultString();
+
+                // SME.Description
+                var smeDesc = "";
+                var sme = rf as Aas.ISubmodelElement;
+                if (sme?.Description?.IsValid() == true)
+                    smeDesc = sme.Description.GetDefaultString();
+
+                // just take it simple and do it case by case
+                for (int fmt = 1; fmt <= 4; fmt++)
+                {
+                    string[] cells = null;
+
+                    // IEC 61360 value list items
+                    var iecVli = "";
+                    if (iec?.ValueList?.ValueReferencePairs != null && iec.ValueList.ValueReferencePairs.Count >= 0)
+                    {
+                        if (fmt == 2)
+                        {
+                            iecVli = $"Value list items: {iec.ValueList.ValueReferencePairs.Count}";
+                        }
+                        else
+                        {
+                            iecVli = "Value list items:\r\n";
+                            var sum = "";
+                            foreach (var vli in iec.ValueList.ValueReferencePairs)
+                            {
+                                if (sum.HasContent())
+                                    sum += ", ";
+                                if (fmt == 4 && vli?.ValueId?.IsValid() == true)
+                                    sum += vli.Value?.Trim() + "=" + vli.ValueId.ToStringExtended(2);
+                                else
+                                    sum += vli.Value?.Trim();
+                            }
+                            iecVli += sum;
+                        }
+                    }
+
+
+                    if (fmt == 1)
+                    {
+                        cells = new[] { cdDef, smeDesc };
+                    }
+
+                    if (fmt >= 2 && fmt <= 4)
+                    {
+                        cells = new[] { cdDef, smeDesc, iecVli };
                     }
 
                     var cellStr = "";
@@ -796,6 +881,8 @@ namespace AasxPluginExportTable.Table
                             sme.SemanticId,
                             sme.SupplementalSemanticIds,
                             cd?.IsCaseOf);
+
+                        repPackDescr(head, "packDescription", sme, cd);
 
                         repPackValueInfo(head, "packValue", sme, cd);
 

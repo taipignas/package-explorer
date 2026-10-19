@@ -295,7 +295,7 @@ namespace AasxPluginExportTable.Table
                     multival = "ZeroToMany";
                 if (tricell == "1..*" || tricell == "[1..*]" || tricell == "OneToMany")
                     multival = "OneToMany";
-                elem.Add(new Aas.Qualifier(type: "Multiplicity", valueType: Aas.DataTypeDefXsd.String, value: multival));
+                elem.Add(new Aas.Qualifier(type: "SMT/Cardinality", valueType: Aas.DataTypeDefXsd.String, value: multival));
                 return true;
             }
 
